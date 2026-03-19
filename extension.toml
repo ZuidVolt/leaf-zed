@@ -5,6 +5,7 @@ schema_version = 1
 authors = ["ZuidVolt"]
 description = "Syntax highlighting for the Leaf templating language (Vapor/Swift)"
 repository = "https://github.com/ZuidVolt/leaf-zed"
+languages = ["languages/leaf"]
 
 [grammars.leaf]
 repository = "https://github.com/visualbam/tree-sitter-leaf"
