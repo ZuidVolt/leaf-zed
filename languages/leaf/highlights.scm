@@ -98,7 +98,9 @@
 
 (null_literal) @constant.builtin
 
-(text) @text.literal
+; Only highlight text that is NOT inside a style or script element
+((text) @text.literal
+  (#not-match? @text.literal "^[\\s\\n]*$")) ; Ignore pure whitespace to keep the tree clean
 
 ; --- Operators ---
 [
