@@ -1,15 +1,19 @@
 ; Inject CSS into <style> blocks
-(element
+(html_element
   (start_tag
     (tag_name) @_tag
     (#eq? @_tag "style"))
-  (text) @injection.content
-  (#set! injection.language "css"))
+  (html_content
+    (text) @injection.content)
+  (#set! injection.language "css")
+  (#set! injection.combined))
 
 ; Inject JavaScript into <script> blocks
-(element
+(html_element
   (start_tag
     (tag_name) @_tag
     (#eq? @_tag "script"))
-  (text) @injection.content
-  (#set! injection.language "javascript"))
+  (html_content
+    (text) @injection.content)
+  (#set! injection.language "javascript")
+  (#set! injection.combined))

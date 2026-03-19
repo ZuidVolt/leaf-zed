@@ -1,8 +1,16 @@
-; Indent after opening Leaf block directives
-(directive
-  (directive_name) @_name
-  (#match? @_name "^(if|unless|for|while)$")) @indent
+; Indent inside block directives
+(if_directive) @indent
+
+(for_directive) @indent
+
+(while_directive) @indent
+
+(unless_directive) @indent
+
+(export_directive) @indent
+
+(extend_directive) @indent
 
 ; Indent inside HTML elements
-(element
+(html_element
   (end_tag) @end) @indent

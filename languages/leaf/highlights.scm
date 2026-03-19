@@ -1,42 +1,83 @@
 ; =============================================================================
 ; Leaf Template Syntax Highlighting for Zed
-; Matches the tree-sitter-leaf grammar (https://github.com/visualbam/tree-sitter-leaf)
 ; =============================================================================
-; --- Leaf Directives ---------------------------------------------------------
-; #if, #else, #elseif, #for, #while, #extend, #export, #import, #unless
-(directive
-  name: (directive_name) @keyword)
+; --- Leaf Directives & Tags --------------------------------------------------
+; The parser registers these exact strings as tokens
+[
+  "#if"
+  "#else"
+  "#else:"
+  "#elseif"
+  "#for"
+  "#while"
+  "#extend"
+  "#export"
+  "#import"
+  "#unless"
+  "#evaluate"
+  "#capitalized"
+  "#contains"
+  "#count"
+  "#date"
+  "#lowercased"
+  "#unsafeHTML"
+  "#uppercased"
+] @keyword
 
-(directive_name) @keyword
+; Closing directives are parsed as distinct structural nodes
+(end_if_directive) @keyword
 
-; Control flow keywords as standalone tokens
-((directive_name) @keyword
-  (#match? @keyword
-    "^(if|else|elseif|unless|for|while|extend|export|import|endif|endfor|endwhile|endunless)$"))
+(end_for_directive) @keyword
 
-; --- Leaf Tag Expressions ----------------------------------------------------
-; #(variable), #(user.name), #(count + 1)
-(tag_expression
-  "#(" @punctuation.special
-  ")" @punctuation.special)
+(end_export_directive) @keyword
 
-(variable_expression
-  "#(" @punctuation.special
-  ")" @punctuation.special)
+(end_extend_directive) @keyword
 
-; --- Identifiers / Variables -------------------------------------------------
+(end_unless_directive) @keyword
+
+(end_while_directive) @keyword
+
+; Middle structural nodes
+(else_directive) @keyword
+
+; Built-in Leaf operators
+[
+  "in"
+  "and"
+  "or"
+  "not"
+] @keyword.operator
+
+; --- Variables & Identifiers -------------------------------------------------
 (identifier) @variable
 
-; Dotted access: user.name → highlight each part
-(member_expression
-  object: (identifier) @variable
-  "." @punctuation.delimiter
-  property: (identifier) @property)
+(attribute_name) @attribute
+
+; --- Literals ----------------------------------------------------------------
+(string_literal) @string
+
+(number_literal) @number
+
+(boolean_literal) @boolean
+
+(null_literal) @constant.builtin
+
+(text) @text.literal
+
+; --- HTML / DOM --------------------------------------------------------------
+(tag_name) @tag
+
+(void_tag_name) @tag
+
+(doctype) @tag.doctype
+
+(html_comment) @comment
+
+(quoted_attribute_value) @string
+
+(unquoted_attribute_value) @string
 
 ; --- Operators ---------------------------------------------------------------
-(binary_expression
-  operator: _ @operator)
-
 [
   "+"
   "-"
@@ -52,60 +93,16 @@
   "&&"
   "||"
   "!"
+  "?"
+  "??"
+  "="
 ] @operator
 
-; --- Literals ----------------------------------------------------------------
-(string_literal) @string
+; --- Punctuation & Delimiters ------------------------------------------------
+; Leaf's specific interpolation boundary
+"#(" @punctuation.special
 
-(string) @string
-
-(number_literal) @number
-
-(number) @number
-
-(boolean_literal) @boolean
-
-(boolean) @boolean
-
-; --- Comments ----------------------------------------------------------------
-; Leaf doc comment: ///
-(doc_comment) @comment.doc
-
-; Regular single-line comment: //
-(comment) @comment
-
-(line_comment) @comment
-
-; HTML comment: <!-- -->
-(html_comment) @comment
-
-; --- HTML Tags ---------------------------------------------------------------
-(tag_name) @tag
-
-(start_tag
-  "<" @punctuation.bracket
-  ">" @punctuation.bracket)
-
-(end_tag
-  "</" @punctuation.bracket
-  ">" @punctuation.bracket)
-
-(self_closing_tag
-  "<" @punctuation.bracket
-  "/>" @punctuation.bracket)
-
-; Doctype
-(doctype) @tag.doctype
-
-; --- HTML Attributes ---------------------------------------------------------
-(attribute
-  name: (attribute_name) @attribute)
-
-(attribute_value) @string
-
-(quoted_attribute_value) @string
-
-; --- Punctuation / Delimiters ------------------------------------------------
+; General formatting
 [
   "("
   ")"
@@ -117,7 +114,13 @@
 
 [
   ","
-  ";"
+  "."
+  ":"
 ] @punctuation.delimiter
 
-"#" @punctuation.special
+[
+  "<"
+  "</"
+  ">"
+  "/>"
+] @punctuation.bracket
