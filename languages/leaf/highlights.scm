@@ -1,8 +1,7 @@
 ; =============================================================================
 ; Leaf Template Syntax Highlighting for Zed
 ; =============================================================================
-; --- Leaf Directives & Tags --------------------------------------------------
-; The parser registers these exact strings as tokens
+; --- Leaf Directives & Keywords ---
 [
   "#if"
   "#else"
@@ -24,7 +23,6 @@
   "#uppercased"
 ] @keyword
 
-; Closing directives are parsed as distinct structural nodes
 (end_if_directive) @keyword
 
 (end_for_directive) @keyword
@@ -37,10 +35,10 @@
 
 (end_while_directive) @keyword
 
-; Middle structural nodes
 (else_directive) @keyword
 
-; Built-in Leaf operators
+(elseif_header) @keyword
+
 [
   "in"
   "and"
@@ -48,12 +46,29 @@
   "not"
 ] @keyword.operator
 
-; --- Variables & Identifiers -------------------------------------------------
-(identifier) @variable
+; --- HTML Tags & Attributes ---
+(tag_name) @tag
+
+(void_tag_name) @tag
+
+(doctype) @tag.doctype
 
 (attribute_name) @attribute
 
-; --- Literals ----------------------------------------------------------------
+(attribute_value) @string
+
+(quoted_attribute_value) @string
+
+(unquoted_attribute_value) @string
+
+; --- Variables & Functions ---
+(identifier) @variable
+
+; Highlights the function name specifically (e.g., 'date' in #date)
+(tag_function_call
+  (expression) @function)
+
+; --- Literals ---
 (string_literal) @string
 
 (number_literal) @number
@@ -62,22 +77,7 @@
 
 (null_literal) @constant.builtin
 
-(text) @text.literal
-
-; --- HTML / DOM --------------------------------------------------------------
-(tag_name) @tag
-
-(void_tag_name) @tag
-
-(doctype) @tag.doctype
-
-(html_comment) @comment
-
-(quoted_attribute_value) @string
-
-(unquoted_attribute_value) @string
-
-; --- Operators ---------------------------------------------------------------
+; --- Operators ---
 [
   "+"
   "-"
@@ -98,11 +98,9 @@
   "="
 ] @operator
 
-; --- Punctuation & Delimiters ------------------------------------------------
-; Leaf's specific interpolation boundary
+; --- Punctuation & Delimiters ---
 "#(" @punctuation.special
 
-; General formatting
 [
   "("
   ")"
@@ -113,14 +111,21 @@
 ] @punctuation.bracket
 
 [
-  ","
-  "."
-  ":"
-] @punctuation.delimiter
-
-[
   "<"
   "</"
   ">"
   "/>"
 ] @punctuation.bracket
+
+[
+  ","
+  "."
+  ":"
+] @punctuation.delimiter
+
+; --- Comments ---
+(html_comment) @comment
+
+; Regex fallback to catch Leaf's /// and // comments inside raw text
+((text) @comment
+  (#match? @comment "^\\s*///?"))
