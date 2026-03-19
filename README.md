@@ -1,4 +1,6 @@
+
 # Leaf Template Support for Zed
+
 This extension adds syntax highlighting support for Leaf templates in the Zed IDE.
 
 ## Features
