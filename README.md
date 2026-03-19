@@ -17,7 +17,7 @@ As this extension is currently in beta and not yet published to the official mar
 1. Clone this repository to your local machine:
 
       ```bash
-      git clone [https://github.com/ZuidVolt/leaf-zed.git](https://github.com/ZuidVolt/leaf-zed.git)
+      git clone --depth=1 https://github.com/ZuidVolt/leaf-zed.git
       ```
 
 2. Open the Zed IDE.
