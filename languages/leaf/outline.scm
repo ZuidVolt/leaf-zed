@@ -2,25 +2,24 @@
 ; Leaf Template Symbol Outline for Zed
 ; Populates the Cmd+Shift+O menu
 ; =============================================================================
-; 1. Show Leaf Exports in the outline (e.g., #export("content"))
+; 1. Show Leaf Exports in the outline
 (export_directive
-  (export_header
-    (string_literal) @name)) @item
+  (export_header) @name) @item
 
 (export_directive
-  (export_header_block
-    (string_literal) @name)) @item
+  (export_header_block) @name) @item
 
-; 2. Show Leaf Extends in the outline (e.g., #extend("base"))
+; 2. Show Leaf Extends in the outline
 (extend_directive
-  (extend_header_with_colon
-    (string_literal) @name)) @item
+  (extend_header) @name) @item
 
-; 3. Show major HTML structural tags that have an ID (e.g., <main id="photo-grid">)
+(extend_directive
+  (extend_header_with_colon) @name) @item
+
+; 3. Show major HTML structural tags that have an ID
 (html_element
   (start_tag
-    (tag_name) @context
+    (tag_name) @name
     (attribute
       (attribute_name) @_id
-      (#eq? @_id "id")
-      (quoted_attribute_value) @name))) @item
+      (#eq? @_id "id")))) @item
