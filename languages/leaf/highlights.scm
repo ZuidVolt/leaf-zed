@@ -61,7 +61,6 @@
 
 (unquoted_attribute_value) @string
 
-; Precise capture for tag boundaries (Fixes mathematical operators and unhighlighted brackets)
 (start_tag
   "<" @punctuation.bracket
   ">" @punctuation.bracket)
@@ -77,7 +76,6 @@
 ; --- Variables & Functions ---
 (identifier) @type
 
-; Priority 200: Forces Method Calls & Standalone Functions (like count!) to highlight
 ((call_expression
   (postfix_expression
     (member_expression
@@ -90,7 +88,6 @@
       (identifier) @function)))
   (#set! priority 200))
 
-; Priority 190: Object Properties (like .name)
 ((member_expression
   (identifier) @property)
   (#set! priority 190))
@@ -110,7 +107,7 @@
 
 (null_literal) @constant.builtin
 
-; Force <style> and <script> blocks to highlight entirely as a string literal
+; Force <style> and <script> blocks to highlight entirely as a string literal (fix later)
 ((html_element
   (start_tag
     (tag_name) @_tag)
@@ -121,15 +118,12 @@
 (text) @text.literal
 
 ; --- Operators ---
-; We specifically scope the < and > math operators to binary expressions
-; This prevents them from fighting with your HTML brackets!
 (binary_expression
   "<" @operator)
 
 (binary_expression
   ">" @operator)
 
-; Safe global operators
 [
   "+"
   "-"
@@ -150,8 +144,6 @@
 
 "#(" @punctuation.special
 
-; Because math < and > are scoped above, we can safely make HTML brackets global!
-; This guarantees your <img /> brackets will ALWAYS be the correct punctuation color.
 [
   "<"
   ">"
