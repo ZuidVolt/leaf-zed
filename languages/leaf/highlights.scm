@@ -101,7 +101,7 @@
 ; Smart text highlighting: Colors HTML text, but ignores <style> and <script> so injections work!
 ((html_element
   (start_tag
-    (tag_name) @_tag)
+    (tag_name) @_tag @tag)
   (html_content
     (text) @text.literal))
   (#not-eq? @_tag "style")
