@@ -52,26 +52,26 @@
 (unary_expression
   "not" @keyword.operator)
 
-(expression
-  [
-    "+"
-    "-"
-    "*"
-    "/"
-    "%"
-    "=="
-    "!="
-    "<"
-    ">"
-    "<="
-    ">="
-    "&&"
-    "||"
-    "!"
-    "?"
-    "??"
-    "="
-  ] @operator)
+; Standard symbol operators
+[
+  "+"
+  "-"
+  "*"
+  "/"
+  "%"
+  "=="
+  "!="
+  "<"
+  ">"
+  "<="
+  ">="
+  "&&"
+  "||"
+  "!"
+  "?"
+  "??"
+  "="
+] @operator
 
 ; --- HTML Tags & Attributes ---
 (tag_name) @tag
