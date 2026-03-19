@@ -39,12 +39,39 @@
 
 (elseif_header) @keyword
 
-[
-  "in"
-  "and"
-  "or"
-  "not"
-] @keyword.operator
+; SCOPED Operators (Prevents bleeding into JS/CSS injections!)
+(for_header
+  "in" @keyword.operator)
+
+(binary_expression
+  [
+    "and"
+    "or"
+  ] @keyword.operator)
+
+(unary_expression
+  "not" @keyword.operator)
+
+(expression
+  [
+    "+"
+    "-"
+    "*"
+    "/"
+    "%"
+    "=="
+    "!="
+    "<"
+    ">"
+    "<="
+    ">="
+    "&&"
+    "||"
+    "!"
+    "?"
+    "??"
+    "="
+  ] @operator)
 
 ; --- HTML Tags & Attributes ---
 (tag_name) @tag
@@ -61,31 +88,44 @@
 
 (unquoted_attribute_value) @string
 
+; SCOPED HTML Brackets (Fixes <img /> and complex tag highlighting)
+(start_tag
+  "<" @punctuation.bracket
+  ">" @punctuation.bracket)
+
+(end_tag
+  "</" @punctuation.bracket
+  ">" @punctuation.bracket)
+
+(html_self_closing_tag
+  "<" @punctuation.bracket
+  "/>" @punctuation.bracket)
+
 ; --- Variables & Functions ---
-; 1. Base variables (like 'user' in 'user.name')
 (identifier) @type
 
-; 2. Method Calls (e.g., the 'format' in 'user.format()')
-(call_expression
+; High Priority: Forces Method Calls to be highlighted (e.g., user.format())
+((call_expression
   (postfix_expression
     (member_expression
       (identifier) @function.method)))
+  (#set! priority 150))
 
-; 3. Standalone Function Calls (e.g., 'count(photos)')
-(call_expression
+; High Priority: Forces Standalone Functions to be highlighted (e.g., count())
+((call_expression
   (postfix_expression
     (primary_expression
       (identifier) @function)))
+  (#set! priority 150))
 
-; 4. Object Properties (e.g., the 'name' in 'user.name')
-(member_expression
+; High Priority: Object Properties
+((member_expression
   (identifier) @property)
+  (#set! priority 150))
 
-; 5. Specific highlighting for loop variables (e.g., 'photo' in '#for(photo in photos)')
 (for_header
   (identifier) @variable.special)
 
-; 6. Dictionary/JSON keys
 (dictionary_pair
   (identifier) @property)
 
@@ -98,49 +138,27 @@
 
 (null_literal) @constant.builtin
 
-; Only highlight text that is NOT inside a style or script element
-((text) @text.literal
-  (#not-match? @text.literal "^[\\s\\n]*$")) ; Ignore pure whitespace to keep the tree clean
-
-; --- Operators ---
-[
-  "+"
-  "-"
-  "*"
-  "/"
-  "%"
-  "=="
-  "!="
-  "<"
-  ">"
-  "<="
-  ">="
-  "&&"
-  "||"
-  "!"
-  "?"
-  "??"
-  "="
-] @operator
+(text) @text.literal
 
 ; --- Punctuation & Delimiters ---
 "#(" @punctuation.special
 
-[
-  "("
-  ")"
-  "{"
-  "}"
-  "["
-  "]"
-] @punctuation.bracket
+; Scoped brackets (Prevents bracket-bleeding into JS/CSS)
+(parenthesized_expression
+  "(" @punctuation.bracket
+  ")" @punctuation.bracket)
 
-[
-  "<"
-  "</"
-  ">"
-  "/>"
-] @punctuation.bracket
+(argument_list
+  "(" @punctuation.bracket
+  ")" @punctuation.bracket)
+
+(dictionary_literal
+  "{" @punctuation.bracket
+  "}" @punctuation.bracket)
+
+(array_literal
+  "[" @punctuation.bracket
+  "]" @punctuation.bracket)
 
 [
   ","
@@ -151,7 +169,6 @@
 ; --- Comments ---
 (html_comment) @comment
 
-; Regex fallback to catch Leaf's /// and // comments inside raw text
 ((text) @comment
   (#match? @comment "^\\s*///?"))
 
