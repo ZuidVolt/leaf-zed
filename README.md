@@ -12,12 +12,18 @@ This extension adds syntax highlighting support for Leaf templates in the Zed ID
 
 ## Installation
 
-Install through the Zed extension marketplace:
+As this extension is currently in beta and not yet published to the official marketplace, you can install it locally as a development extension:
 
-1. Open the Zed IDE
-2. Navigate to Extensions (`zed: extensions`)
-3. Search for "Leaf"
-4. Select and install the extension
+1. Clone this repository to your local machine:
+
+      ```bash
+      git clone [https://github.com/ZuidVolt/leaf-zed.git](https://github.com/ZuidVolt/leaf-zed.git)
+      ```
+
+2. Open the Zed IDE.
+3. Open the Command Palette (`Cmd` + `Shift` + `P` on macOS, or `Ctrl` + `Shift` + `P` on Linux/Windows).
+4. Search for and select the command: **`zed: install dev extension`**.
+5. Navigate to and select the `leaf-zed` folder you just cloned.
 
 ## Usage
 
