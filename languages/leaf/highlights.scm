@@ -62,11 +62,32 @@
 (unquoted_attribute_value) @string
 
 ; --- Variables & Functions ---
-(identifier) @variable
+; 1. Base variables (like 'user' in 'user.name')
+(identifier) @type
 
-; Highlights the function name specifically (e.g., 'date' in #date)
-(tag_function_call
-  (expression) @function)
+; 2. Method Calls (e.g., the 'format' in 'user.format()')
+(call_expression
+  (postfix_expression
+    (member_expression
+      (identifier) @function.method)))
+
+; 3. Standalone Function Calls (e.g., 'count(photos)')
+(call_expression
+  (postfix_expression
+    (primary_expression
+      (identifier) @function)))
+
+; 4. Object Properties (e.g., the 'name' in 'user.name')
+(member_expression
+  (identifier) @property)
+
+; 5. Specific highlighting for loop variables (e.g., 'photo' in '#for(photo in photos)')
+(for_header
+  (identifier) @variable.special)
+
+; 6. Dictionary/JSON keys
+(dictionary_pair
+  (identifier) @property)
 
 ; --- Literals ---
 (string_literal) @string
@@ -76,6 +97,8 @@
 (boolean_literal) @boolean
 
 (null_literal) @constant.builtin
+
+(text) @text.literal
 
 ; --- Operators ---
 [
@@ -129,3 +152,20 @@
 ; Regex fallback to catch Leaf's /// and // comments inside raw text
 ((text) @comment
   (#match? @comment "^\\s*///?"))
+
+; --- Built-in Leaf Tags ---
+(count_tag) @function.builtin
+
+(lowercased_tag) @function.builtin
+
+(uppercased_tag) @function.builtin
+
+(capitalized_tag) @function.builtin
+
+(contains_tag) @function.builtin
+
+(date_tag) @function.builtin
+
+(unsafe_html_tag) @function.builtin
+
+(dump_context_tag) @function.builtin
