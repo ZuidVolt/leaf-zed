@@ -61,35 +61,47 @@
 
 (unquoted_attribute_value) @string
 
+; Precise capture for tag boundaries (Fixes mathematical operators and unhighlighted brackets)
+(start_tag
+  "<" @punctuation.bracket
+  ">" @punctuation.bracket)
+
+(end_tag
+  "</" @punctuation.bracket
+  ">" @punctuation.bracket)
+
+(html_self_closing_tag
+  "<" @punctuation.bracket
+  "/>" @punctuation.bracket)
+
 ; --- Variables & Functions ---
-; 1. Base variables (like 'user' in 'user.name')
 (identifier) @type
 
-; 2. Method Calls (e.g., the 'format' in 'user.format()')
-(call_expression
+; Priority 200: Forces Method Calls & Standalone Functions (like count!) to highlight
+((call_expression
   (postfix_expression
     (member_expression
       (identifier) @function.method)))
+  (#set! priority 200))
 
-; 3. Standalone Function Calls (e.g., 'count(photos)')
-(call_expression
+((call_expression
   (postfix_expression
     (primary_expression
       (identifier) @function)))
+  (#set! priority 200))
 
-; 4. Object Properties (e.g., the 'name' in 'user.name')
-(member_expression
+; Priority 190: Object Properties (like .name)
+((member_expression
   (identifier) @property)
+  (#set! priority 190))
 
-; 5. Specific highlighting for loop variables (e.g., 'photo' in '#for(photo in photos)')
 (for_header
-  (identifier) @variable.special)
+  (identifier) @type)
 
-; 6. Dictionary/JSON keys
 (dictionary_pair
   (identifier) @property)
 
-; --- Literals ---
+; --- Literals & JS/CSS Fallback ---
 (string_literal) @string
 
 (number_literal) @number
@@ -98,11 +110,26 @@
 
 (null_literal) @constant.builtin
 
-; Only highlight text that is NOT inside a style or script element
-((text) @text.literal
-  (#not-match? @text.literal "^[\\s\\n]*$")) ; Ignore pure whitespace to keep the tree clean
+; Force <style> and <script> blocks to highlight entirely as a string literal
+((html_element
+  (start_tag
+    (tag_name) @_tag)
+  (html_content) @string)
+  (#any-of? @_tag "script" "style")
+  (#set! priority 150))
+
+(text) @text.literal
 
 ; --- Operators ---
+; We specifically scope the < and > math operators to binary expressions
+; This prevents them from fighting with your HTML brackets!
+(binary_expression
+  "<" @operator)
+
+(binary_expression
+  ">" @operator)
+
+; Safe global operators
 [
   "+"
   "-"
@@ -111,8 +138,6 @@
   "%"
   "=="
   "!="
-  "<"
-  ">"
   "<="
   ">="
   "&&"
@@ -126,6 +151,15 @@
 ; --- Punctuation & Delimiters ---
 "#(" @punctuation.special
 
+; Because math < and > are scoped above, we can safely make HTML brackets global!
+; This guarantees your <img /> brackets will ALWAYS be the correct punctuation color.
+[
+  "<"
+  ">"
+  "</"
+  "/>"
+] @punctuation.bracket
+
 [
   "("
   ")"
@@ -133,13 +167,6 @@
   "}"
   "["
   "]"
-] @punctuation.bracket
-
-[
-  "<"
-  "</"
-  ">"
-  "/>"
 ] @punctuation.bracket
 
 [
@@ -151,7 +178,6 @@
 ; --- Comments ---
 (html_comment) @comment
 
-; Regex fallback to catch Leaf's /// and // comments inside raw text
 ((text) @comment
   (#match? @comment "^\\s*///?"))
 
