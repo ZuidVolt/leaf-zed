@@ -143,30 +143,21 @@
 ; --- Punctuation & Delimiters ---
 "#(" @punctuation.special
 
-; Scoped brackets (Matches individually to prevent impossible pattern errors)
-(parenthesized_expression
-  "(" @punctuation.bracket)
+; Global brackets (Safe because the parser treats HTML/JS/CSS brackets as raw text!)
+[
+  "("
+  ")"
+  "{"
+  "}"
+  "["
+  "]"
+] @punctuation.bracket
 
-(parenthesized_expression
-  ")" @punctuation.bracket)
-
-(argument_list
-  "(" @punctuation.bracket)
-
-(argument_list
-  ")" @punctuation.bracket)
-
-(dictionary_literal
-  "{" @punctuation.bracket)
-
-(dictionary_literal
-  "}" @punctuation.bracket)
-
-(array_literal
-  "[" @punctuation.bracket)
-
-(array_literal
-  "]" @punctuation.bracket)
+[
+  ","
+  "."
+  ":"
+] @punctuation.delimiter
 
 ; --- Comments ---
 (html_comment) @comment
