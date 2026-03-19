@@ -2,12 +2,10 @@ id = "leaf"
 name = "Leaf"
 version = "0.0.1"
 schema_version = 1
-authors = ["Cooper"]
+authors = ["ZuidVolt"]
 description = "Syntax highlighting for the Leaf templating language (Vapor/Swift)"
-repository = "https://github.com/your-username/leaf-zed"
+repository = "https://github.com/ZuidVolt/leaf-zed"
 
 [grammars.leaf]
 repository = "https://github.com/visualbam/tree-sitter-leaf"
-# Run: git ls-remote https://github.com/visualbam/tree-sitter-leaf HEAD
-# and paste the full 40-character SHA below
 rev = "7ca9aca731a3cd1b8b38743e88d828465fc6d480"
