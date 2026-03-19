@@ -148,7 +148,6 @@
   "="
 ] @operator
 
-; --- Punctuation & Delimiters ---
 "#(" @punctuation.special
 
 ; Because math < and > are scoped above, we can safely make HTML brackets global!
@@ -181,7 +180,7 @@
 ((text) @comment
   (#match? @comment "^\\s*///?"))
 
-; --- Built-in Leaf Tags ---
+; --- Built-in Leaf Tag Functions ---
 (count_tag) @function.builtin
 
 (lowercased_tag) @function.builtin
