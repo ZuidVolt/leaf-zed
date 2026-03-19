@@ -98,7 +98,42 @@
 
 (null_literal) @constant.builtin
 
-(text) @text.literal
+; Smart text highlighting: Colors HTML text, but ignores <style> and <script> so injections work!
+((html_element
+  (start_tag
+    (tag_name) @_tag)
+  (html_content
+    (text) @text.literal))
+  (#not-eq? @_tag "style")
+  (#not-eq? @_tag "script"))
+
+; Catches text that is outside HTML tags (e.g., direct text inside #if, #for, or the root file)
+(if_directive
+  (html_content
+    (text) @text.literal))
+
+(for_directive
+  (html_content
+    (text) @text.literal))
+
+(while_directive
+  (html_content
+    (text) @text.literal))
+
+(unless_directive
+  (html_content
+    (text) @text.literal))
+
+(export_directive
+  (html_content
+    (text) @text.literal))
+
+(extend_directive
+  (html_content
+    (text) @text.literal))
+
+(template
+  (text) @text.literal)
 
 ; --- Operators ---
 [
