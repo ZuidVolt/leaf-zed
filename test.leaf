@@ -1,0 +1,39 @@
+#extend("base"):
+    #export("title", "Street Photography Portfolio")
+
+    #export("content"):
+        <header class="gallery-header">
+            <h1>#(user.name)'s Shots from Perth</h1>
+            #if(user.isPro):
+                <span class="badge">Pro Photographer</span>
+            #else:
+                <span class="badge">Enthusiast</span>
+            #endif
+        </header>
+
+        /// Main Gallery Grid
+        <main class="grid-container" id="photo-grid">
+            #if(count(photos) > 0):
+                #for(photo in photos):
+                    <div class="photo-card" data-camera="#(photo.cameraModel)">
+                        <img src="#(photo.url)" alt="#(photo.description)" />
+                        <div class="metadata">
+                            <p>Lens: #(photo.lens)</p>
+                            <p>Aperture: f/#(photo.aperture)</p>
+                        </div>
+                    </div>
+                #endfor
+            #else:
+                <p class="empty-state">No photos uploaded yet. Time to hit the streets!</p>
+            #endif
+        </main>
+
+        <style>
+
+        </style>
+
+
+        <script>
+        </script>
+    #endexport
+#endextend
