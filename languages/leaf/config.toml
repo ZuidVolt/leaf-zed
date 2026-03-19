@@ -1,0 +1,7 @@
+name = "Leaf"
+grammar = "leaf"
+path_suffixes = ["leaf"]
+line_comments = ["/// ", "// "]
+block_comment = { start = "<!-- ", end = " -->" }
+tab_size = 4
+hard_tabs = false
